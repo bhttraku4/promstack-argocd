@@ -1,12 +1,8 @@
 # promstack-argocd
 Deploying the Kube-Prometheus-Stack along with dashboards and alerting rules using Kubernetes resources and ArgoCD
 -------------------------------------------------------------------
-First, we need to create secrets for admin Credentials.
-Then we need to create some custom Dashboards and Alerting Rules.
-Then we need to create some ConfigMap for Alerting Rules.
-Later have to configure the Helm Values file.
-Later have to Create an ArgoCD Application Manifest.
-Then the last we can Deploy with ArgoCD.
+Firstly, we need to create secrets for admin Credentials. Then we need to create some custom Dashboards and Alerting Rule and then we need to create some ConfigMap for Alerting Rules,
+Later have to configure the Helm Values file and then we can Create an ArgoCD Application Manifest. Then the last we can Deploy with ArgoCD.
 1. apply the secrets, config maps, and Helm values -:
 **kubectl apply -f secrets.yaml
 kubectl apply -f custom-dashboards-configmap.yaml
