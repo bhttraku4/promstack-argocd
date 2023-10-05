@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-alert-rules
+data:
+  alert-rules.yaml: |
+    groups:
+   - name: oomkiller.rules
+        rules:
+          - alert: KubernetesContainerOomKilled
+            expr: |
+              (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 12h >= 1)
+              and ignoring (reason)
+              max_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[12h]) > 0
+            for: 0m
+            labels:
+              severity: warning
+            annotations:
+              summary: Kubernetes container got OOMkilled  (instance {{ $labels.instance }})
+              description: "Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been OOMKilled {{ $value }} times in the last 12 hours.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+              handbook: "Check memory settings of application vs. memory limits of pod. Check potential memory leak or bug in application."
+  - name: test-group
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{status="500"}[5m])) / sum(rate(http_requests_total[5m])) * 100 > 5
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate on {{ $labels.instance }}"
+          description: "{{ $labels.instance }} has a high error rate ({{ $value }}%)"
+          handbook:"This rule triggers if the error rate (HTTP 500 responses) is above 5% for more than 10 minutes"
+
+      - alert: DiskAlmostFull
+        expr: |
+          (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 10
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk space is running out on {{ $labels.instance }}"
+          description: "{{ $labels.instance }} has less than 10% disk space available"
+          handbook:"This rule triggers if the disk space on a node is less than 10% for more than 15 minutes."
+
+      - alert: ServiceDown
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Service {{ $labels.instance }} is down"
+          description: "The service {{ $labels.instance }} is not responding"
+          handbook:"This rule triggers if the service is down (not responding) for more than 5 minutes."
+
