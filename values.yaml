@@ -1,0 +1,27 @@
+kubePrometheusStack:
+  enabled: true
+grafana:
+  adminPasswordSecret: kube-prometheus-secrets
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          orgId: 1
+          url: http://prometheus:9090
+          password: {{ .Files.Get "kube-prometheus-secrets.admin-password" | b64enc | quote }}
+          user: {{ .Files.Get "kube-prometheus-secrets.admin-username" | b64enc | quote }}
+prometheusOperator:
+  additionalPrometheusRules:
+    - /etc/config/alert-rules.yaml
+  additionalScrapeConfigs:
+    - job_name: 'custom-service'
+      static_configs:
+        - targets: ['custom-service:8080']
+prometheus:
+  additionalScrapeConfigs:
+    - job_name: 'example-job'
+      static_configs:
+        - targets: ['example-service:8080']
