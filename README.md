@@ -4,9 +4,13 @@ Deploying the Kube-Prometheus-Stack along with dashboards and alerting rules usi
 Firstly, we need to create secrets for admin Credentials. Then we need to create some custom Dashboards and Alerting Rule and then we need to create some ConfigMap for Alerting Rules,
 Later have to configure the Helm Values file and then we can Create an ArgoCD Application Manifest. Then the last we can Deploy with ArgoCD.
 1. apply the secrets, config maps, and Helm values -:
-**kubectl apply -f secrets.yaml
-kubectl apply -f custom-dashboards-configmap.yaml
-kubectl apply -f custom-alert-rules-configmap.yaml**
+
+For the Secrets we need to install Sealed Secrets in your cluster.
+Then we can use kubeseal command-line tool to create a Sealed Secret from your regular Secret. The Sealed Secret can be safely stored in your Git repository.
+
+**kubeseal <secret.yaml > sealed-secret.yaml**
+Then we can store the sealed-secret.yaml in your Git repository. Since it's encrypted, it's safe to be versioned alongside your other configuration files.
+
 Then at the last we can create the argocd application
 **kubectl apply -f argocd-application.yaml**
 
