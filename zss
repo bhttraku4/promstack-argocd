@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sealed-secret-app
+spec:
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: 'default'
+  source:
+    repoURL: ''https://github.com//bhttraku4/promstack-argocd/your-sealed-secrets-repo.git''
+    path: 'path/to/sealed-secret.yaml'
+    targetRevision: 'main'
+  project: 'default'
+  syncPolicy:
+    automated: {}
