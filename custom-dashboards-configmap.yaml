@@ -14,7 +14,7 @@ data:
         "type": "graph",
         "title": "HTTP Requests",
         "datasource": "Prometheus",
-        "targets": [
+        "targets": [ 
           {
             "expr": "sum(http_requests_total)",
             "legendFormat": "Total Requests"
