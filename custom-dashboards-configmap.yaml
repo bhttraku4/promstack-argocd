@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-dashboards
+data:
+  dashboard1.json: |
+   {
+  "dashboard": {
+    "id": null,
+    "title": "Sample Dashboard 1",
+    "panels": [
+      {
+        "id": 1,
+        "type": "graph",
+        "title": "HTTP Requests",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "sum(http_requests_total)",
+            "legendFormat": "Total Requests"
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "refresh": "10s"
+  },
+  "overwrite": true
+}
+
+  dashboard2.json: |
+    {
+  "dashboard": {
+    "id": null,
+    "title": "Sample Dashboard 2",
+    "panels": [
+      {
+        "id": 2,
+        "type": "table",
+        "title": "Top Errors",
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "topk(5, http_errors_total)",
+            "format": "table"
+          }
+        ],
+        "styles": [
+          {
+            "type": "date",
+            "pattern": "YYYY-MM-DD HH:mm:ss",
+            "alias": "Time"
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-1d",
+      "to": "now"
+    },
+    "refresh": "30s"
+  },
+  "overwrite": true
+}
